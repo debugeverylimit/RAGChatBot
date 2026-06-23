@@ -1,183 +1,313 @@
-# 🌍 AI Travel Planner – Multi-Agent Trip Planning System
+# 💬 Mutual Fund FAQ Assistant (RAG)
 
-> An AI-powered travel planning platform that transforms natural language travel requests into personalized, structured itineraries using a multi-agent architecture.
+A facts-only AI assistant that answers objective questions about HDFC Mutual Fund schemes using Retrieval-Augmented Generation (RAG).
 
-## 🔗 Live Demo
-
-**Frontend:** https://ai-travel-planner-multi-agents-back-rouge.vercel.app/
-
-**Backend API:** https://ai-travel-planner-multi-agents-1.onrender.com
-
-**Health Check:** https://ai-travel-planner-multi-agents-1.onrender.com/health
+> **Disclaimer:** Facts-only. No investment advice.
 
 ---
 
 ## Problem Statement
 
-Planning a trip typically requires users to research destinations, compare budgets, coordinate logistics, and stitch together information from multiple sources. This process is fragmented, time-consuming, and often overwhelming.
+Retail investors often struggle to find trustworthy mutual fund information spread across multiple websites, scheme documents, and disclosures.
 
-This project explores how AI agents can collaborate to generate personalized travel plans from a single natural-language prompt.
+Existing chatbots may:
+
+* Hallucinate information
+* Provide investment advice
+* Lack transparency about sources
+
+This project solves that by providing:
+
+✅ Factual, source-backed answers
+
+✅ Single-source citations
+
+✅ Strict refusal of investment advice
+
+✅ Transparent and compliant responses
 
 ---
 
 ## Product Vision
 
-Enable users to create customized travel itineraries in seconds through conversational AI.
+Build a trustworthy mutual fund assistant that prioritizes:
 
-Example:
+* Accuracy over intelligence
+* Compliance over recommendations
+* Transparency over black-box responses
 
-> "Plan a 5-day trip to Japan. Tokyo + Kyoto. Budget $3,000. Love food and temples, hate crowds."
+The assistant only answers objective, verifiable questions and never provides investment advice.
 
-The system generates:
+---
 
-- Personalized destination recommendations
-- Day-by-day itineraries
-- Budget allocation
-- Logistics and transportation suggestions
-- Structured trip plans that can be revisited later
+## Target Users
+
+* Retail investors researching mutual funds
+* Customer support teams handling repetitive FAQs
+* Content and operations teams
 
 ---
 
 ## Key Features
 
-- ✅ Natural language trip planning
-- ✅ Multi-agent orchestration
-- ✅ Personalized itinerary generation
-- ✅ Budget-aware recommendations
-- ✅ Plan history and retrieval
-- ✅ Offline mock mode for demos and testing
-- ✅ Shared contract-driven architecture
+* Facts-only question answering
+* Source-backed responses with citations
+* Retrieval-Augmented Generation (RAG)
+* Advisory query refusal handling
+* Daily corpus refresh pipeline
+* Minimal chat interface
+* PII guardrails and compliance checks
 
 ---
 
-## Multi-Agent Architecture
+## Example Questions
 
-### Destination Agent
-Identifies destinations and activities aligned with user preferences.
+✅ What is the expense ratio of HDFC Mid Cap Fund Direct Growth?
 
-### Logistics Agent
-Optimizes transportation and travel sequencing.
+✅ Who manages HDFC Pharma and Healthcare Fund Direct Growth?
 
-### Budget Agent
-Allocates expenses and validates budget constraints.
+✅ What is the benchmark index of HDFC Balanced Advantage Fund Direct Growth?
 
-### Review Agent
-Evaluates itinerary quality and consistency.
+❌ Should I invest in HDFC Small Cap Fund?
 
-### Orchestrator
-Coordinates all agents and merges outputs into a final travel plan.
+❌ Which fund is better: HDFC Mid Cap or HDFC Large Cap?
 
 ---
 
-## Architecture & Deployment
+## Product Decisions
+
+* Limited corpus to 15 HDFC scheme pages for MVP.
+* Facts-only responses to ensure compliance.
+* Single citation per answer to maximize trust and explainability.
+* Maximum response length of 3 sentences for readability.
+* Strict refusal handling for investment advice.
+
+---
+
+## Success Metrics
+
+* Retrieval accuracy
+* Citation accuracy
+* Advisory refusal accuracy
+* Response latency
+* Corpus freshness
+
+---
+
+# 🏗 Architecture
 
 ```text
-Frontend (React + Vite + TypeScript)
-        ↓
-      Vercel
-        ↓
-REST API
-        ↓
-Backend (Fastify + TypeScript)
-        ↓
-      Render
-        ↓
-Multi-Agent Orchestrator
- ├── Destination Agent
- ├── Logistics Agent
- ├── Budget Agent
- └── Review Agent
+User Question
+      ↓
+PII Guard
+      ↓
+Intent Classifier
+      ↓
+ ┌──────────────┐
+ │ Advisory?    │── Yes ──> Refusal Response
+ └──────────────┘
+      ↓ No
+Retrieve Relevant Chunks
+      ↓
+Generate Answer with LLM
+      ↓
+Validate + Add Citation
+      ↓
+Final Response
 ```
 
 ---
 
 ## Tech Stack
 
-### Frontend
-- React
-- TypeScript
-- Vite
-
 ### Backend
-- Node.js
-- Fastify
-- TypeScript
 
-### AI & System Design
-- Multi-Agent Systems
-- LLM Integration
-- Prompt Engineering
-- Zod Validation
+* Node.js
+* TypeScript
+* Express
+
+### Vector Database
+
+* ChromaDB (JS Client)
+
+### Embeddings
+
+* Xenova BGE Small (`bge-small-en-v1.5`)
+
+### LLM
+
+* Groq SDK
+* Llama 3.1 8B Instant
 
 ### Deployment
-- Vercel
-- Render
+
+* Local Chroma Server
+* Express API
 
 ---
 
-## Repository Structure
+## Corpus (HDFC Mutual Fund)
 
-```text
-apps/
-├── backend/
-├── web/
+| Scheme | Category |
+|--------|----------|
+| HDFC Silver ETF FoF Direct Growth | Commodities — Silver |
+| HDFC Mid Cap Fund Direct Growth | Equity — Mid Cap |
+| HDFC Equity Fund Direct Growth | Equity — Diversified |
+| HDFC Defence Fund Direct Growth | Equity — Thematic (Defence) |
+| HDFC Gold ETF Fund of Fund Direct Plan Growth | Commodities — Gold |
+| HDFC Small Cap Fund Direct Growth | Equity — Small Cap |
+| HDFC Nifty 50 Index Fund Direct Growth | Index — Nifty 50 |
+| HDFC Balanced Advantage Fund Direct Growth | Hybrid — Balanced Advantage |
+| HDFC Multi Cap Fund Direct Growth | Equity — Multi Cap |
+| HDFC Pharma and Healthcare Fund Direct Growth | Equity — Sector |
+| HDFC Focused Fund Direct Growth | Equity — Focused |
+| HDFC Nifty Next 50 Index Fund Direct Growth | Index — Nifty Next 50 |
+| HDFC Short Term Opportunities Fund Direct Growth | Debt — Short Term |
+| HDFC BSE Sensex Index Fund Direct Growth | Index — BSE Sensex |
+| HDFC Large and Mid Cap Fund Direct Growth | Equity — Large & Mid Cap |
 
-packages/
-└── shared/
-
-slides/
-└── product and architecture documentation
-```
+Full URLs and aliases: [`config/corpus.yaml`](./config/corpus.yaml).
 
 ---
 
-## Local Setup
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+* Node.js 20+
+* Python 3
+* Groq API Key
+
+---
+
+## Installation
 
 ```bash
 npm install
-cp apps/backend/.env.example apps/backend/.env
-npm run dev
-npm run dev:web
+cp .env.example .env
+```
+
+Add your API key:
+
+```env
+GROQ_API_KEY=your_key_here
 ```
 
 ---
 
-## API Endpoints
+## Start Chroma
 
 ```bash
-GET  /health
-POST /api/plan
-GET  /api/plans
-GET  /api/plan/:trace_id
+npm run chroma:setup
+npm run chroma:server
 ```
 
 ---
 
-## Future Enhancements
+## Ingest the Corpus
 
-- Real-time flight and hotel integrations
-- Collaborative trip planning
-- Interactive itinerary editing
-- Cost optimization engine
-- User accounts and saved preferences
-- Recommendation feedback loop
+```bash
+npm run ingest
+```
 
 ---
 
-## Why This Project Matters
+## Start the Application
 
-This project demonstrates:
+```bash
+npm run dev
+```
 
-- Product thinking and problem framing
-- AI product design
-- Multi-agent system architecture
-- End-to-end product development
-- System design and API thinking
-- Ability to ship and deploy production-ready applications
+Open:
+
+```text
+http://localhost:3000
+```
+
+---
+
+# Environment Variables
+
+| Variable        | Required |
+| --------------- | -------- |
+| GROQ_API_KEY    | Yes      |
+| PORT            | No       |
+| CHROMA_HOST     | No       |
+| LLM_MODEL       | No       |
+| EMBEDDING_MODEL | No       |
+
+---
+
+# Development Commands
+
+```bash
+npm test
+npm run retrieve:test
+npm run qa:matrix
+npm run build
+npm start
+```
+
+---
+
+# Ingestion & Scheduling
+
+```bash
+npm run ingest
+npm run ingest -- --skip-fetch
+npm run ingest:index
+npm run schedule:once
+npm run schedule
+```
+
+---
+
+# Known Limitations
+
+* Corpus is limited to 15 HDFC schemes.
+* Data is refreshed periodically and is not real-time.
+* Changes in Groww page structure may require scraper updates.
+* First run downloads a local embedding model.
+
+---
+
+# Key Learnings
+
+* Built an end-to-end RAG pipeline using Node.js and TypeScript.
+* Improved retrieval accuracy by expanding the corpus from 5 to 15 schemes.
+* Debugged ingestion, chunking, and verification issues.
+* Designed compliance guardrails to prevent hallucinations and investment recommendations.
+* Implemented source-backed responses to improve user trust and transparency.
+
+---
+
+# Repository Structure
+
+```text
+src/
+├── api
+├── ingest
+├── rag
+├── scheduler
+├── ui
+└── utils
+
+config/
+└── corpus.yaml
+
+docs/
+├── architecture.md
+├── implementation-plan.md
+└── RUNBOOK.md
+```
 
 ---
 
 ## Author
 
-**Manjari Vishwakarma**  
+**Manjari Vishwakarma**
+
 Product Manager | Data & AI Enthusiast
+
+
