@@ -19,7 +19,7 @@
     "test": "vitest run"
   },
   "engines": {
-    "node": ">=20"
+    "node": "20.x"
   },
   "dependencies": {
     "@xenova/transformers": "^2.0.1",
