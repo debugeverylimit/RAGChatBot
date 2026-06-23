@@ -1,18 +1,22 @@
-import { pipeline, type FeatureExtractionPipeline } from "@xenova/transformers";
+import { pipeline } from "@xenova/transformers";
 import type { EmbeddingFunction, EmbeddingFunctionSpace } from "chromadb";
 import { env } from "../config/env.js";
 
 const QUERY_PREFIX =
   "Represent this sentence for searching relevant passages: ";
 
-let extractor: FeatureExtractionPipeline | null = null;
+let extractor: any = null;
 
-async function getExtractor(): Promise<FeatureExtractionPipeline> {
+async function getExtractor(): Promise<any> {
   if (!extractor) {
     console.log(`Loading embedding model: ${env.embeddingModel}...`);
-    extractor = await pipeline("feature-extraction", env.embeddingModel, {
-      quantized: true,
-    });
+    extractor = await pipeline(
+      "feature-extraction",
+      env.embeddingModel,
+      {
+        quantized: true,
+      }
+    );
   }
   return extractor;
 }
@@ -26,18 +30,27 @@ async function embedBatch(
 
   for (const text of texts) {
     const input = isQuery ? `${QUERY_PREFIX}${text}` : text;
-    const output = await model(input, { pooling: "mean", normalize: true });
+
+    const output = await model(input, {
+      pooling: "mean",
+      normalize: true,
+    });
+
     embeddings.push(Array.from(output.data as Float32Array));
   }
 
   return embeddings;
 }
 
-export async function embedDocuments(texts: string[]): Promise<number[][]> {
+export async function embedDocuments(
+  texts: string[],
+): Promise<number[][]> {
   return embedBatch(texts, false);
 }
 
-export async function embedQuery(text: string): Promise<number[]> {
+export async function embedQuery(
+  text: string,
+): Promise<number[]> {
   const [embedding] = await embedBatch([text], true);
   return embedding;
 }
@@ -49,7 +62,9 @@ export class BgeEmbeddingFunction implements EmbeddingFunction {
     return embedDocuments(texts);
   }
 
-  async generateForQueries(texts: string[]): Promise<number[][]> {
+  async generateForQueries(
+    texts: string[],
+  ): Promise<number[][]> {
     return embedBatch(texts, true);
   }
 
@@ -62,7 +77,9 @@ export class BgeEmbeddingFunction implements EmbeddingFunction {
   }
 
   getConfig(): Record<string, string> {
-    return { model: env.embeddingModel };
+    return {
+      model: env.embeddingModel,
+    };
   }
 }
 
@@ -74,3 +91,4 @@ export function getEmbeddingFunction(): BgeEmbeddingFunction {
   }
   return sharedEmbeddingFunction;
 }
+
