@@ -16,6 +16,7 @@ import {
   resolveScheme,
 } from "./schemeResolver.js";
 
+const DEFAULT_TOP_K = 5;
 const SLUG_ONLY_DISTANCE_THRESHOLD = 0.55;
 
 function buildWhereFilter(
@@ -40,10 +41,8 @@ function buildWhereFilter(
   return { $and: clauses };
 }
 
-function resultCount(section: SectionTag | null): number {
-  if (section === "fund_management") return 3;
-  if (section) return 1;
-  return 3;
+function resultCount(_section: SectionTag | null): number {
+  return DEFAULT_TOP_K;
 }
 
 function mapQueryResults(
@@ -172,6 +171,23 @@ export async function retrieve(query: string): Promise<RetrievalResult> {
       message: "No matching content found in the indexed corpus for this query.",
     };
   }
+
+  console.log(
+    JSON.stringify({
+      event: "retrieval",
+      query: trimmedQuery,
+      scheme: scheme.slug,
+      section: section ?? null,
+      topK: nResults,
+      chunks: chunks.map((chunk) => ({
+        id: chunk.id,
+        section: chunk.section,
+        distance: Number(chunk.distance.toFixed(4)),
+        similarity: Number((1 - chunk.distance).toFixed(4)),
+        managerName: chunk.managerName,
+      })),
+    }),
+  );
 
   if (!section && chunks[0]!.distance > SLUG_ONLY_DISTANCE_THRESHOLD) {
     return {

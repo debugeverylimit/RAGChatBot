@@ -41,10 +41,26 @@ export async function fetchSchemePage(scheme: SchemeConfig): Promise<FetchMeta> 
 export async function fetchAllSchemes(): Promise<FetchMeta[]> {
   const corpus = loadCorpus();
   const results: FetchMeta[] = [];
+  const failures: { slug: string; error: string }[] = [];
+
+  console.log(`Starting fetch for ${corpus.schemes.length} scheme URLs...`);
 
   for (const scheme of corpus.schemes) {
-    console.log(`Fetching ${scheme.slug}...`);
-    results.push(await fetchSchemePage(scheme));
+    try {
+      console.log(`Fetching ${scheme.slug}...`);
+      results.push(await fetchSchemePage(scheme));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Failed to fetch ${scheme.slug}: ${message}`);
+      failures.push({ slug: scheme.slug, error: message });
+    }
+  }
+
+  console.log(
+    `Fetch complete: ${results.length}/${corpus.schemes.length} pages ingested successfully.`,
+  );
+  if (failures.length > 0) {
+    console.error(`Fetch failures (${failures.length}):`, failures);
   }
 
   return results;

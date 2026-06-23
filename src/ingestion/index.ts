@@ -243,7 +243,7 @@ export async function queryIndex(args: {
 
   const result = await collection.query({
     queryTexts: [args.queryText],
-    nResults: args.nResults ?? 3,
+    nResults: args.nResults ?? 5,
     where: args.where,
     include: ["documents", "metadatas", "distances"],
   });
@@ -287,8 +287,13 @@ export async function validateIndex(): Promise<IndexValidationResult> {
   }
 
   const count = await collection.count();
-  if (count < 40 || count > 150) {
-    errors.push(`Expected 40-150 indexed chunks, got ${count}`);
+  const expectedSchemes = loadCorpus().schemes.length;
+  const minChunks = expectedSchemes * 8;
+  const maxChunks = expectedSchemes * 20;
+  if (count < minChunks || count > maxChunks) {
+    errors.push(
+      `Expected ${minChunks}-${maxChunks} indexed chunks, got ${count}`,
+    );
   }
 
   try {
@@ -296,8 +301,10 @@ export async function validateIndex(): Promise<IndexValidationResult> {
       await fs.readFile(metadataIndexPath(), "utf8"),
     ) as SchemeMetadata[];
 
-    if (metadata.length !== 5) {
-      errors.push(`Expected 5 schemes in metadata.json, got ${metadata.length}`);
+    if (metadata.length !== expectedSchemes) {
+      errors.push(
+        `Expected ${expectedSchemes} schemes in metadata.json, got ${metadata.length}`,
+      );
     }
 
     for (const scheme of metadata) {

@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { corpusScopePhrase } from "../lib/corpus.js";
 import { metadataIndexPath } from "../lib/paths.js";
 import type { SchemeMetadata, SchemeResolution } from "../lib/types.js";
 
@@ -101,7 +102,7 @@ function isOutOfScopeQuery(query: string): string | null {
   const normalized = normalize(query);
   for (const keyword of OUT_OF_SCOPE_AMC_KEYWORDS) {
     if (normalized.includes(keyword)) {
-      return `This assistant only covers five HDFC schemes on Groww; it does not include ${keyword}.`;
+      return `This assistant only covers ${corpusScopePhrase()} on Groww; it does not include ${keyword}.`;
     }
   }
   return null;

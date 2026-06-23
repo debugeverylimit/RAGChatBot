@@ -1,3 +1,4 @@
+import { corpusScopePhrase } from "../lib/corpus.js";
 import { generateAnswer } from "./generator.js";
 import { retrieve } from "./retriever.js";
 import {
@@ -73,7 +74,7 @@ export async function runRag(message: string): Promise<RagDraft> {
       return buildResponse({
         answer:
           retrieval.message ??
-          "I can only answer factual questions about the five HDFC schemes in my corpus.",
+          `I can only answer factual questions about the ${corpusScopePhrase()} in my corpus.`,
         citation_url: AMFI_EDUCATION_URL,
         last_updated: todayIsoDate(),
         is_refusal: true,

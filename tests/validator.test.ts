@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { isGroundedInChunks } from "../src/app/grounding.js";
 import {
   containsAdvisoryLanguage,
   containsPerformanceClaims,
@@ -31,8 +32,30 @@ describe("validator", () => {
     expect(containsAdvisoryLanguage("You should invest today.")).toBe(true);
   });
 
-  it("detects performance claims", () => {
+  it("detects performance claims for returns but not expense ratio", () => {
     expect(containsPerformanceClaims("Expected CAGR of 12%.")).toBe(true);
+    expect(
+      containsPerformanceClaims(
+        "The expense ratio of HDFC Mid Cap Fund is 0.76%.",
+      ),
+    ).toBe(false);
+  });
+
+  it("grounds expense ratio answers with normalized percentages", () => {
+    expect(
+      isGroundedInChunks(
+        "The expense ratio is 0.22 percent.",
+        [
+          {
+            id: "x",
+            text: "Expense ratio: 0.22% (Direct Growth plan).",
+            section: "expense_ratio",
+            distance: 0.1,
+            managerName: null,
+          },
+        ],
+      ),
+    ).toBe(true);
   });
 
   it("rejects disallowed citations", () => {

@@ -26,8 +26,8 @@ const MANUAL_QUERIES = [
     status: "ok" as const,
   },
   {
-    query: "Benchmark of Large Cap Fund",
-    schemeIncludes: "large-cap",
+    query: "Benchmark of Large and Mid Cap Fund",
+    schemeIncludes: "large-and-mid-cap",
     section: "benchmark",
     status: "ok" as const,
   },

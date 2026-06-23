@@ -5,7 +5,7 @@ Category: Equity — Mid Cap
 AUM: ₹97,350.484 Cr
 NAV: ₹227.616 (as of 22-Jun-2026)
 Groww rating: 5/5
-Risk: Moderately High
+Risk classification: Moderately High
 Lock-in: No lock-in period.
 
 ## expense_ratio

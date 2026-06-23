@@ -27,25 +27,29 @@ Design and implement a lightweight **Retrieval-Augmented Generation (RAG)**-base
 
 **Selected AMC:** [HDFC Mutual Fund](http://www.hdfcfund.com)
 
-For the current phase, the corpus is limited to **5 Groww scheme pages** (reference product context). Each page serves as the source for factual scheme data such as expense ratio, exit load, minimum SIP, risk classification, benchmark, tax implications, and **fund management** details (fund manager names, tenure, education, and professional experience).
+For the current phase, the corpus is limited to **15 Groww scheme pages** (reference product context). Each page serves as the source for factual scheme data such as expense ratio, exit load, minimum SIP, risk classification, benchmark, tax implications, and **fund management** details (fund manager names, tenure, education, and professional experience).
 
 | # | Scheme | URL |
 |---|--------|-----|
-| 1 | HDFC Mid Cap Fund Direct Growth | https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth |
-| 2 | HDFC Large Cap Fund Direct Growth | https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth |
-| 3 | HDFC Small Cap Fund Direct Growth | https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth |
-| 4 | HDFC Gold ETF Fund of Fund Direct Plan Growth | https://groww.in/mutual-funds/hdfc-gold-etf-fund-of-fund-direct-plan-growth |
-| 5 | HDFC Defence Fund Direct Growth | https://groww.in/mutual-funds/hdfc-defence-fund-direct-growth |
+| 1 | HDFC Silver ETF FoF Direct Growth | https://groww.in/mutual-funds/hdfc-silver-etf-fof-direct-growth |
+| 2 | HDFC Mid Cap Fund Direct Growth | https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth |
+| 3 | HDFC Equity Fund Direct Growth | https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth |
+| 4 | HDFC Defence Fund Direct Growth | https://groww.in/mutual-funds/hdfc-defence-fund-direct-growth |
+| 5 | HDFC Gold ETF Fund of Fund Direct Plan Growth | https://groww.in/mutual-funds/hdfc-gold-etf-fund-of-fund-direct-plan-growth |
+| 6 | HDFC Small Cap Fund Direct Growth | https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth |
+| 7 | HDFC Nifty 50 Index Fund Direct Growth | https://groww.in/mutual-funds/hdfc-nifty-50-index-fund-direct-growth |
+| 8 | HDFC Balanced Advantage Fund Direct Growth | https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth |
+| 9 | HDFC Multi Cap Fund Direct Growth | https://groww.in/mutual-funds/hdfc-multi-cap-fund-direct-growth |
+| 10 | HDFC Pharma and Healthcare Fund Direct Growth | https://groww.in/mutual-funds/hdfc-pharma-and-healthcare-fund-direct-growth |
+| 11 | HDFC Focused Fund Direct Growth | https://groww.in/mutual-funds/hdfc-focused-fund-direct-growth |
+| 12 | HDFC Nifty Next 50 Index Fund Direct Growth | https://groww.in/mutual-funds/hdfc-nifty-next-50-index-fund-direct-growth |
+| 13 | HDFC Short Term Opportunities Fund Direct Growth | https://groww.in/mutual-funds/hdfc-short-term-opportunities-fund-direct-growth |
+| 14 | HDFC BSE Sensex Index Fund Direct Growth | https://groww.in/mutual-funds/hdfc-bse-sensex-index-fund-direct-growth |
+| 15 | HDFC Large and Mid Cap Fund Direct Growth | https://groww.in/mutual-funds/hdfc-large-and-mid-cap-fund-direct-growth |
 
-**Scheme coverage:**
+**Scheme coverage:** equity (mid cap, small cap, multi cap, focused, sector, thematic), hybrid (balanced advantage), index (Nifty 50, Nifty Next 50, Sensex), commodities (gold, silver), and debt (short term).
 
-- **Equity — Mid Cap:** HDFC Mid Cap Fund Direct Growth
-- **Equity — Large Cap:** HDFC Large Cap Fund Direct Growth
-- **Equity — Small Cap:** HDFC Small Cap Fund Direct Growth
-- **Equity — Thematic (Defence):** HDFC Defence Fund Direct Growth
-- **Commodities — Gold:** HDFC Gold ETF Fund of Fund Direct Plan Growth
-
-> **Note:** The original brief allowed a broader corpus (15–25 official URLs from AMC, AMFI, and SEBI). This implementation intentionally narrows scope to the five URLs above for initial development and evaluation.
+> **Note:** The original brief allowed a broader corpus (15–25 official URLs from AMC, AMFI, and SEBI). This implementation uses the 15 Groww scheme URLs above.
 
 ### 2. FAQ Assistant Requirements
 
@@ -98,7 +102,7 @@ The solution should include a simple interface with:
 
 ### Data and Sources
 
-- The active corpus is limited to the **5 Groww scheme URLs** listed in [Corpus Definition](#1-corpus-definition)
+- The active corpus is limited to the **15 Groww scheme URLs** listed in [Corpus Definition](#1-corpus-definition)
 - Responses must cite one of these source URLs (or an official AMC/AMFI/SEBI link when refusing advisory queries)
 - Do not use third-party blogs or other aggregator websites beyond the defined corpus
 
@@ -127,10 +131,10 @@ Do not collect, store, or process:
 ### README Document
 
 - Setup instructions (`npm install`, env vars, Chroma server, run)
-- Selected AMC (**HDFC Mutual Fund**) and the **5 schemes** in the corpus
+- Selected AMC (**HDFC Mutual Fund**) and the **15 schemes** in the corpus
 - Architecture overview (RAG approach; link to [architecture.md](./architecture.md))
 - How to run ingestion manually (`npm run ingest`) and via daily scheduler
-- Known limitations (including corpus limited to 5 Groww URLs)
+- Known limitations (including corpus limited to 15 Groww URLs)
 
 ### Disclaimer Snippet
 
@@ -150,4 +154,4 @@ Facts-only. No investment advice.
 
 The goal is to build a **trustworthy, transparent, and compliant** mutual fund FAQ assistant that prioritizes accuracy over intelligence. The system should ensure that users receive only verified, source-backed financial information, without any advisory bias or speculative content.
 
-Implementation is delivered as a **Node.js + TypeScript** application with an Express API, a minimal HTML chat UI, a daily ingestion pipeline, and a Chroma-backed vector index refreshed from the five Groww scheme pages.
+Implementation is delivered as a **Node.js + TypeScript** application with an Express API, a minimal HTML chat UI, a daily ingestion pipeline, and a Chroma-backed vector index refreshed from the fifteen Groww scheme pages.

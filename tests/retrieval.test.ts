@@ -76,8 +76,8 @@ describe("retrieve integration", () => {
         section: "exit_load",
       },
       {
-        query: "Benchmark of Large Cap Fund",
-        schemeIncludes: "large-cap",
+        query: "Benchmark of Large and Mid Cap Fund",
+        schemeIncludes: "large-and-mid-cap",
         section: "benchmark",
       },
     ];

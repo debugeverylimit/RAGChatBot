@@ -1,3 +1,4 @@
+import { corpusScopePhrase } from "../lib/corpus.js";
 import { resolveScheme } from "./schemeResolver.js";
 import {
   AMFI_EDUCATION_URL,
@@ -59,7 +60,7 @@ export async function buildRefusal(
 
   return buildRefusalResponse({
     answer:
-      "I can only answer factual questions about the five HDFC schemes in my corpus, such as expense ratio, exit load, or fund manager details. I cannot provide investment advice or recommend whether to invest.",
+      `I can only answer factual questions about the ${corpusScopePhrase()} in my corpus, such as expense ratio, exit load, or fund manager details. I cannot provide investment advice or recommend whether to invest.`,
     citation_url: SEBI_EDUCATION_URL,
     is_refusal: true,
   });

@@ -2,6 +2,7 @@ import { chunkAllSchemes, validateAllChunks } from "./chunk.js";
 import { fetchAllSchemes } from "./fetch.js";
 import { runIndexing, validateIndex } from "./index.js";
 import { parseAllSchemes } from "./parse.js";
+import { loadCorpus } from "../lib/corpus.js";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -67,10 +68,12 @@ export async function runIngestion(
   console.log("=== Mutual Fund FAQ Ingestion ===\n");
 
   let fetched = 0;
+  let fetchFailures = 0;
   if (!options.skipFetch) {
     const fetchResult = await fetchAllSchemes();
     fetched = fetchResult.length;
-    console.log(`\nFetched ${fetched} scheme pages.\n`);
+    fetchFailures = loadCorpus().schemes.length - fetched;
+    console.log(`\nIngestion fetch summary: ${fetched} pages saved, ${fetchFailures} failed.\n`);
   } else {
     console.log("Skipping fetch (--skip-fetch).\n");
   }

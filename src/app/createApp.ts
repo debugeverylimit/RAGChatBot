@@ -3,6 +3,8 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { handleChat } from "./chatPipeline.js";
+import { debugQuery } from "./debugQuery.js";
+import { loadCorpus } from "../lib/corpus.js";
 import { PiiRejectedError } from "./piiGuard.js";
 import { chatRequestSchema, chatResponseSchema } from "./schemas.js";
 
@@ -21,6 +23,43 @@ export function createApp() {
       status: "ok",
       service: "mutual-fund-faq-assistant",
     });
+  });
+
+  app.get("/api/schemes", (_req, res) => {
+    const corpus = loadCorpus();
+    res.json({
+      amc: corpus.amc,
+      count: corpus.schemes.length,
+      schemes: corpus.schemes.map((scheme) => ({
+        name: scheme.scheme_name,
+        category: scheme.category,
+        url: scheme.source_url,
+      })),
+    });
+  });
+
+  app.get("/debug/query", async (req, res) => {
+    const q = typeof req.query.q === "string" ? req.query.q : "";
+    if (!q.trim()) {
+      res.status(400).json({ error: "Query parameter q is required" });
+      return;
+    }
+
+    try {
+      const result = await debugQuery(q);
+      res.json(result);
+    } catch (error) {
+      const messageText =
+        error instanceof Error ? error.message : "Unexpected server error";
+
+      if (messageText.includes("Chroma server unreachable")) {
+        res.status(503).json({ error: messageText });
+        return;
+      }
+
+      console.error("GET /debug/query failed:", error);
+      res.status(500).json({ error: messageText });
+    }
   });
 
   app.post("/api/chat", async (req, res) => {

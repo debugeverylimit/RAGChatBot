@@ -60,7 +60,7 @@ Confirm `CHROMA_HOST` in `.env` matches (default `http://localhost:8000`).
 
 ### 3. Check Groww fetch failures
 
-Ingestion fetches five URLs from [`config/corpus.yaml`](../config/corpus.yaml). Network or rate limits can fail individual schemes.
+Ingestion fetches fifteen URLs from [`config/corpus.yaml`](../config/corpus.yaml). Network or rate limits can fail individual schemes.
 
 ```bash
 npm run ingest
@@ -79,7 +79,7 @@ ls -la data/raw/
 ls -la data/processed/*/chunks.json
 ```
 
-Each of the five slugs should have `chunks.json` with non-empty `chunks` array.
+Each of the fifteen slugs should have `chunks.json` with non-empty `chunks` array.
 
 ### 4. Re-index without re-fetch
 

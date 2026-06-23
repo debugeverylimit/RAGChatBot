@@ -1,8 +1,9 @@
 import Groq from "groq-sdk";
 import { env } from "../config/env.js";
+import { corpusScopePhrase } from "../lib/corpus.js";
 import type { RetrievalResult } from "../lib/types.js";
 
-const SYSTEM_PROMPT = `You are a facts-only mutual fund FAQ assistant for five HDFC schemes on Groww.
+const SYSTEM_PROMPT = `You are a facts-only mutual fund FAQ assistant for ${corpusScopePhrase()} on Groww.
 
 Rules:
 - Answer ONLY using the provided context chunks. Do not infer beyond them.
@@ -10,14 +11,13 @@ Rules:
 - Do not give investment advice, recommendations, or performance comparisons.
 - Do not mention buying, selling, or holding units.
 - Do not include URLs in the answer.
-- If context is insufficient, say so briefly and refer the user to the official scheme page.
+- If the context contains the fact (expense ratio, exit load, minimum SIP, benchmark, fund manager, risk, etc.), state it clearly with the exact values from context.
+- If context is insufficient or the fact is missing, say exactly: "I don't know based on the available sources."
+- Never invent numbers, names, or dates not present in the context.
 - Use plain, precise language suitable for retail investors.`;
 
-function getClient(): Groq {
-  if (!env.groqApiKey) {
-    throw new Error("GROQ_API_KEY is not configured");
-  }
-  return new Groq({ apiKey: env.groqApiKey });
+export function getSystemPrompt(): string {
+  return SYSTEM_PROMPT;
 }
 
 function buildUserPrompt(query: string, retrieval: RetrievalResult): string {
@@ -37,7 +37,24 @@ ${contextBlocks}
 
 Question: ${query}
 
-Write a factual answer in at most 3 sentences using only the context above.`;
+Write a factual answer in at most 3 sentences using only the context above. Quote exact values when present.`;
+}
+
+export function buildLlmPrompt(
+  query: string,
+  retrieval: RetrievalResult,
+): { system: string; user: string } {
+  return {
+    system: SYSTEM_PROMPT,
+    user: buildUserPrompt(query, retrieval),
+  };
+}
+
+function getClient(): Groq {
+  if (!env.groqApiKey) {
+    throw new Error("GROQ_API_KEY is not configured");
+  }
+  return new Groq({ apiKey: env.groqApiKey });
 }
 
 function trimToThreeSentences(text: string): string {

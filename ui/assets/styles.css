@@ -103,11 +103,83 @@ body {
   line-height: 1.5;
 }
 
-.scheme-list {
-  margin: 10px 0 0;
-  padding-left: 18px;
-  color: var(--text);
+.scheme-panel {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fbfcfe;
+  padding: 10px 12px;
+}
+
+.scheme-summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  user-select: none;
+}
+
+.scheme-summary::-webkit-details-marker {
+  display: none;
+}
+
+.scheme-summary-hint {
+  color: var(--accent-dark);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.scheme-summary-hint::after {
+  content: "Show list";
+}
+
+.scheme-panel[open] .scheme-summary-hint::after {
+  content: "Hide list";
+}
+
+.scheme-panel[open] .scheme-summary-hint {
+  color: var(--text-muted);
+}
+
+.scheme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 14px;
+  max-height: 132px;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding-right: 4px;
+}
+
+.scheme-grid a {
+  display: block;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--accent-dark);
+  text-decoration: none;
+}
+
+.scheme-grid a:hover {
+  text-decoration: underline;
+}
+
+.scheme-grid .scheme-category {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-top: 1px;
+}
+
+.scheme-grid-empty {
+  grid-column: 1 / -1;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
 }
 
 .chat-shell {
@@ -282,6 +354,11 @@ body {
 
   .example-btn {
     width: 100%;
+  }
+
+  .scheme-grid {
+    grid-template-columns: 1fr;
+    max-height: 160px;
   }
 
   .composer {

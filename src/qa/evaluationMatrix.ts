@@ -21,8 +21,8 @@ export const FACTUAL_MATRIX: FactualMatrixCase[] = [
   },
   {
     category: "expense_ratio",
-    query: "Expense ratio for HDFC Large Cap Fund Direct Growth",
-    schemeIncludes: "large-cap",
+    query: "Expense ratio for HDFC Large and Mid Cap Fund Direct Growth",
+    schemeIncludes: "large-and-mid-cap",
     section: "expense_ratio",
   },
   {
@@ -51,8 +51,8 @@ export const FACTUAL_MATRIX: FactualMatrixCase[] = [
   },
   {
     category: "exit_load",
-    query: "Exit load for HDFC Large Cap Fund Direct Growth",
-    schemeIncludes: "large-cap",
+    query: "Exit load for HDFC Large and Mid Cap Fund Direct Growth",
+    schemeIncludes: "large-and-mid-cap",
     section: "exit_load",
   },
   {
@@ -81,8 +81,8 @@ export const FACTUAL_MATRIX: FactualMatrixCase[] = [
   },
   {
     category: "minimum_investment",
-    query: "What is the minimum SIP amount for HDFC Large Cap Fund?",
-    schemeIncludes: "large-cap",
+    query: "What is the minimum SIP amount for HDFC Large and Mid Cap Fund?",
+    schemeIncludes: "large-and-mid-cap",
     section: "minimum_investment",
   },
   {
@@ -111,8 +111,8 @@ export const FACTUAL_MATRIX: FactualMatrixCase[] = [
   },
   {
     category: "benchmark",
-    query: "What is the benchmark index for HDFC Large Cap Fund?",
-    schemeIncludes: "large-cap",
+    query: "What is the benchmark index for HDFC Large and Mid Cap Fund?",
+    schemeIncludes: "large-and-mid-cap",
     section: "benchmark",
   },
   {
@@ -129,8 +129,8 @@ export const FACTUAL_MATRIX: FactualMatrixCase[] = [
   },
   {
     category: "fund_management",
-    query: "Fund manager of HDFC Large Cap Fund Direct Growth",
-    schemeIncludes: "large-cap",
+    query: "Fund manager of HDFC Large and Mid Cap Fund Direct Growth",
+    schemeIncludes: "large-and-mid-cap",
     section: "fund_management",
   },
   {
@@ -168,7 +168,7 @@ export const COMPLIANCE_MATRIX: ComplianceMatrixCase[] = [
   },
   {
     category: "advisory",
-    query: "Would you recommend HDFC Large Cap Fund?",
+    query: "Would you recommend HDFC Nifty 50 Index Fund?",
     expectRefusal: true,
     citationIncludes: "sebi.gov.in",
   },

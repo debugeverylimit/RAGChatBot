@@ -14,7 +14,8 @@ const REQUIRED_SECTIONS: SectionTag[] = [
   "fund_management",
 ];
 
-const MAX_CHUNK_CHARS = 1600;
+const CHUNK_SIZE = 900;
+const CHUNK_OVERLAP = 120;
 
 function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4);
@@ -28,30 +29,27 @@ function chunkHeader(
   return `Scheme: ${schemeName}\nSection: ${section}\nSource: ${sourceUrl}\n\n`;
 }
 
-function splitLongText(text: string, maxChars: number): string[] {
-  if (text.length <= maxChars) return [text];
-
-  const paragraphs = text.split(/\n\n+/);
-  const parts: string[] = [];
-  let current = "";
-
-  for (const paragraph of paragraphs) {
-    const candidate = current ? `${current}\n\n${paragraph}` : paragraph;
-    if (candidate.length <= maxChars) {
-      current = candidate;
-      continue;
-    }
-
-    if (current) parts.push(current);
-    if (paragraph.length <= maxChars) {
-      current = paragraph;
-    } else {
-      parts.push(paragraph.slice(0, maxChars));
-      current = paragraph.slice(maxChars);
-    }
+function splitWithOverlap(
+  text: string,
+  chunkSize: number,
+  overlap: number,
+): string[] {
+  if (text.length <= chunkSize) {
+    return [text];
   }
 
-  if (current) parts.push(current);
+  const parts: string[] = [];
+  let start = 0;
+
+  while (start < text.length) {
+    const end = Math.min(start + chunkSize, text.length);
+    parts.push(text.slice(start, end));
+    if (end >= text.length) {
+      break;
+    }
+    start += chunkSize - overlap;
+  }
+
   return parts;
 }
 
@@ -119,7 +117,7 @@ function chunkStandardSection(
   section: SectionTag,
 ): ChunkRecord[] {
   const body = parsed.sections[section];
-  const parts = splitLongText(body, MAX_CHUNK_CHARS);
+  const parts = splitWithOverlap(body, CHUNK_SIZE, CHUNK_OVERLAP);
 
   return parts.map((part, index) =>
     buildChunk(parsed.slug, parsed, section, part, index),
@@ -210,8 +208,10 @@ export async function validateAllChunks(): Promise<ValidationResult> {
     }
   }
 
-  if (totalChunks < 40) {
-    errors.push(`Expected at least 40 chunks total, got ${totalChunks}`);
+  if (totalChunks < corpus.schemes.length * 8) {
+    errors.push(
+      `Expected at least ${corpus.schemes.length * 8} chunks total, got ${totalChunks}`,
+    );
   }
 
   return { ok: errors.length === 0, errors, totalChunks, byScheme };

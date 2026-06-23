@@ -55,7 +55,7 @@ const SECTION_RULES: SectionRule[] = [
   },
   {
     section: "overview",
-    keywords: ["nav", "aum", "fund size", "risk", "rating", "category"],
+    keywords: ["nav", "aum", "fund size", "risk", "risk classification", "rating", "category"],
   },
 ];
 

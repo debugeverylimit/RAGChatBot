@@ -60,7 +60,7 @@ function buildOverview(data: GrowwSchemeData): string {
     `AUM: ₹${data.aum?.toLocaleString("en-IN") ?? "N/A"} Cr`,
     `NAV: ₹${data.nav ?? "N/A"} (as of ${data.nav_date ?? "N/A"})`,
     `Groww rating: ${data.groww_rating ?? "N/A"}/5`,
-    `Risk: ${data.nfo_risk || "As per Riskometer on scheme page"}`,
+    `Risk classification: ${data.nfo_risk || "As per Riskometer on scheme page"}`,
     `Lock-in: ${formatLockIn(data.lock_in)}`,
   ];
   return lines.join("\n");
@@ -231,10 +231,16 @@ export async function parseAllSchemes(): Promise<ParsedScheme[]> {
   const results: ParsedScheme[] = [];
 
   for (const scheme of corpus.schemes) {
-    console.log(`Parsing ${scheme.slug}...`);
-    results.push(await parseScheme(scheme.slug));
+    try {
+      console.log(`Parsing ${scheme.slug}...`);
+      results.push(await parseScheme(scheme.slug));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Failed to parse ${scheme.slug}: ${message}`);
+    }
   }
 
+  console.log(`Parsed ${results.length}/${corpus.schemes.length} schemes.`);
   return results;
 }
 

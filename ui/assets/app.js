@@ -9,6 +9,8 @@ const formEl = document.getElementById("chat-form");
 const inputEl = document.getElementById("chat-input");
 const sendBtnEl = document.getElementById("send-btn");
 const examplesEl = document.getElementById("examples");
+const schemeListEl = document.getElementById("scheme-list");
+const schemeSummaryLabelEl = document.getElementById("scheme-summary-label");
 
 let loadingEl = null;
 
@@ -57,6 +59,40 @@ function renderExamples() {
       formEl.requestSubmit();
     });
     examplesEl.appendChild(button);
+  }
+}
+
+async function renderSchemes() {
+  if (!schemeListEl) return;
+
+  try {
+    const response = await fetch("/api/schemes");
+    if (!response.ok) {
+      throw new Error("Failed to load schemes");
+    }
+
+    const data = await response.json();
+    if (schemeSummaryLabelEl) {
+      schemeSummaryLabelEl.textContent = `${data.count} supported HDFC schemes`;
+    }
+
+    schemeListEl.innerHTML = "";
+    for (const scheme of data.schemes) {
+      const link = document.createElement("a");
+      link.href = scheme.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.title = scheme.name;
+      link.append(document.createTextNode(scheme.name));
+      const category = document.createElement("span");
+      category.className = "scheme-category";
+      category.textContent = scheme.category;
+      link.append(category);
+      schemeListEl.appendChild(link);
+    }
+  } catch {
+    schemeListEl.innerHTML =
+      '<p class="scheme-grid-empty">Could not load scheme list. Ask about any HDFC scheme in the corpus.</p>';
   }
 }
 
@@ -139,4 +175,5 @@ formEl.addEventListener("submit", (event) => {
 });
 
 renderExamples();
+renderSchemes();
 inputEl.focus();

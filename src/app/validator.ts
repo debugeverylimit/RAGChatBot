@@ -4,6 +4,7 @@ import {
   AMFI_EDUCATION_URL,
   SEBI_EDUCATION_URL,
 } from "./schemas.js";
+import { isGroundedInChunks } from "./grounding.js";
 
 const ADVISORY_LANGUAGE = [
   /\byou should invest\b/i,
@@ -15,10 +16,28 @@ const ADVISORY_LANGUAGE = [
   /\bwill outperform\b/i,
 ];
 
+/** Return / projection language — not expense ratio, exit load, or SIP facts. */
 const PERFORMANCE_LANGUAGE = [
-  /\b\d+(?:\.\d+)?%/,
-  /\b(?:cagr|xirr)\b/i,
+  /\b(?:cagr|xirr|annualized return)\b/i,
   /\b\d+\s*(?:year|yr|month|mo)\s+return/i,
+  /\b(?:expected|projected|forecast|predicted)\s+returns?\b/i,
+  /\b(?:will|would)\s+(?:return|grow|double|triple)\b/i,
+  /\boutperform\b/i,
+  /\b(?:past|historical)\s+performance\b/i,
+];
+
+const FACTUAL_METRIC_PHRASES = [
+  /\bexpense ratio\b/i,
+  /\bexit load\b/i,
+  /\bminimum sip\b/i,
+  /\bmin(?:imum)?(?:\s+)(?:sip|investment|lumpsum)\b/i,
+  /\bbenchmark\b/i,
+  /\bfund manager\b/i,
+  /\bwho manages\b/i,
+  /\brisk(?:ometer| classification)?\b/i,
+  /\baum\b/i,
+  /\bnav\b/i,
+  /\block[- ]?in\b/i,
 ];
 
 export function getCitationAllowlist(): Set<string> {
@@ -58,38 +77,24 @@ export function containsAdvisoryLanguage(text: string): boolean {
 }
 
 export function containsPerformanceClaims(text: string): boolean {
-  return PERFORMANCE_LANGUAGE.some((pattern) => pattern.test(text));
-}
-
-function normalizeToken(token: string): string {
-  return token.toLowerCase().replace(/[^a-z0-9.%₹]/g, "");
-}
-
-export function isGroundedInChunks(
-  answer: string,
-  chunks: RetrievedChunk[],
-): boolean {
-  const body = stripFooter(answer);
-  const context = chunks.map((chunk) => chunk.text).join(" ").toLowerCase();
-
-  const numbers = body.match(/\d+(?:\.\d+)?%?/g) ?? [];
-  for (const number of numbers) {
-    if (!context.includes(number)) {
-      return false;
-    }
-  }
-
-  const tokens = body
-    .split(/\s+/)
-    .map(normalizeToken)
-    .filter((token) => token.length >= 5);
-
-  if (tokens.length === 0) {
+  if (PERFORMANCE_LANGUAGE.some((pattern) => pattern.test(text))) {
     return true;
   }
 
-  const matched = tokens.filter((token) => context.includes(token));
-  return matched.length / tokens.length >= 0.35;
+  const hasPercent = /\d+(?:\.\d+)?\s*%/.test(text);
+  const hasReturnContext = /\b(?:return|returns|gain|gains|profit|yield)\b/i.test(
+    text,
+  );
+
+  if (hasPercent && hasReturnContext) {
+    return true;
+  }
+
+  if (hasPercent && FACTUAL_METRIC_PHRASES.some((pattern) => pattern.test(text))) {
+    return false;
+  }
+
+  return false;
 }
 
 export type ValidationInput = {
@@ -112,7 +117,10 @@ export function validateResponse(input: ValidationInput): {
   if (!allowlist.has(citation_url)) {
     issues.push("citation_not_allowed");
     if (input.chunks?.[0]) {
-      citation_url = String(input.chunks[0].text.match(/Source: (https:\/\/\S+)/)?.[1] ?? citation_url);
+      citation_url = String(
+        input.chunks[0].text.match(/Source: (https:\/\/\S+)/)?.[1] ??
+          citation_url,
+      );
     }
     if (!allowlist.has(citation_url)) {
       citation_url = AMFI_EDUCATION_URL;
@@ -137,7 +145,16 @@ export function validateResponse(input: ValidationInput): {
         "I cannot provide return projections or performance calculations. Please refer to the linked official scheme page for historical data.";
     }
 
-    if (input.chunks && input.chunks.length > 0 && !isGroundedInChunks(answer, input.chunks)) {
+    const policyAdjusted = issues.some((issue) =>
+      ["advisory_language", "performance_claim"].includes(issue),
+    );
+
+    if (
+      !policyAdjusted &&
+      input.chunks &&
+      input.chunks.length > 0 &&
+      !isGroundedInChunks(answer, input.chunks)
+    ) {
       issues.push("grounding_failed");
       answer =
         "I could not verify this answer against the retrieved source text. Please check the linked official scheme page for the latest facts.";
@@ -146,3 +163,6 @@ export function validateResponse(input: ValidationInput): {
 
   return { answer, citation_url, issues };
 }
+
+// Re-export for tests
+export { isGroundedInChunks } from "./grounding.js";

@@ -1,6 +1,7 @@
 import request from "supertest";
 import { describe, expect, it } from "vitest";
 import { createApp } from "../src/app/createApp.js";
+import { isChromaAvailable } from "./helpers/chroma.js";
 
 const app = createApp();
 
@@ -89,5 +90,37 @@ describe("GET /health", () => {
     const response = await request(app).get("/health");
     expect(response.status).toBe(200);
     expect(response.body.status).toBe("ok");
+  });
+});
+
+describe("GET /api/schemes", () => {
+  it("returns all corpus schemes", async () => {
+    const response = await request(app).get("/api/schemes");
+    expect(response.status).toBe(200);
+    expect(response.body.count).toBe(15);
+    expect(response.body.schemes).toHaveLength(15);
+    expect(response.body.schemes[0]).toMatchObject({
+      name: expect.any(String),
+      category: expect.any(String),
+      url: expect.stringMatching(/^https:\/\/groww\.in\/mutual-funds\//),
+    });
+  });
+});
+
+describe("GET /debug/query", () => {
+  it("returns debug payload for a factual query when Chroma is available", async () => {
+    const chromaReady = await isChromaAvailable();
+    if (!chromaReady) return;
+
+    const response = await request(app).get(
+      "/debug/query?q=What%20is%20the%20expense%20ratio%20of%20HDFC%20Mid%20Cap%20Fund%20Direct%20Growth%3F",
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.query).toContain("expense ratio");
+    expect(response.body.embedding.dimensions).toBeGreaterThan(0);
+    expect(response.body.retrieval.chunks.length).toBeGreaterThan(0);
+    expect(response.body.prompt.system).toContain("facts-only");
+    expect(response.body.prompt.user).toContain("Context:");
   });
 });

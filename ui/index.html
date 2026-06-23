@@ -14,7 +14,7 @@
             <div class="logo" aria-hidden="true">MF</div>
             <div>
               <h1 class="title">HDFC Mutual Fund FAQ Assistant</h1>
-              <p class="subtitle">Facts-only answers from five Groww scheme pages</p>
+              <p class="subtitle">Facts-only answers from 15 Groww scheme pages</p>
             </div>
           </div>
           <div class="disclaimer">Facts-only. No investment advice.</div>
@@ -23,13 +23,13 @@
           Ask objective questions about expense ratio, exit load, minimum SIP, benchmark,
           or fund manager details. I answer only from indexed HDFC scheme sources.
         </p>
-        <ul class="scheme-list">
-          <li>HDFC Mid Cap Fund Direct Growth</li>
-          <li>HDFC Large Cap Fund Direct Growth</li>
-          <li>HDFC Small Cap Fund Direct Growth</li>
-          <li>HDFC Gold ETF Fund of Fund Direct Plan Growth</li>
-          <li>HDFC Defence Fund Direct Growth</li>
-        </ul>
+        <details class="scheme-panel" id="scheme-panel">
+          <summary class="scheme-summary">
+            <span id="scheme-summary-label">15 supported HDFC schemes</span>
+            <span class="scheme-summary-hint" aria-hidden="true"></span>
+          </summary>
+          <div id="scheme-list" class="scheme-grid" aria-label="Supported schemes"></div>
+        </details>
       </header>
 
       <section class="chat-shell" aria-label="Chat">

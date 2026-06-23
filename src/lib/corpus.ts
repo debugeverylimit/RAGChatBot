@@ -24,3 +24,11 @@ export function getSchemeBySlug(slug: string): SchemeConfig {
   }
   return scheme;
 }
+
+export function getSchemeCount(): number {
+  return loadCorpus().schemes.length;
+}
+
+export function corpusScopePhrase(): string {
+  return `${getSchemeCount()} HDFC schemes`;
+}
