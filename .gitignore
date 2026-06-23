@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+*.log
+.venv-chroma/
+
+# Vector index and fetched corpus (regenerated locally)
+data/index/
+data/raw/*.html
+data/raw/*.md
+
+# OS / editor
+.DS_Store

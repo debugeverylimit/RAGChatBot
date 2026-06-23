@@ -1,0 +1,64 @@
+name: Daily Ingestion
+
+on:
+  schedule:
+    # 10:00 AM IST = 04:30 UTC
+    - cron: "30 4 * * *"
+  workflow_dispatch:
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Chroma server
+        run: npm run chroma:setup
+
+      - name: Start Chroma
+        run: npm run chroma:server &
+
+      - name: Wait for Chroma
+        run: |
+          for i in {1..30}; do
+            if curl -sf http://localhost:8000/api/v2/heartbeat >/dev/null; then
+              echo "Chroma is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Chroma failed to start"
+          exit 1
+
+      - name: Run scheduled ingestion
+        run: npm run schedule:once
+        env:
+          INGESTION_SCHEDULE_HOUR: "10"
+          INGESTION_SCHEDULE_MINUTE: "0"
+          INGESTION_SCHEDULE_TIMEZONE: Asia/Kolkata
+
+      - name: Upload ingestion artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ingestion-artifacts
+          path: |
+            data/processed/metadata.json
+            data/index/active.json

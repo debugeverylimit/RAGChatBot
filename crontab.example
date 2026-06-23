@@ -1,0 +1,7 @@
+# Daily ingestion at 10:00 AM IST (04:30 UTC)
+# Replace /path/to/RAGChatBot with your project directory.
+#
+# Ensure Chroma is reachable at CHROMA_HOST before the job runs, e.g.:
+#   npm run chroma:server
+#
+30 4 * * * cd /path/to/RAGChatBot && /usr/bin/env npm run schedule:once >> logs/ingestion.log 2>&1

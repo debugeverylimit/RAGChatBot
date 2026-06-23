@@ -1,0 +1,53 @@
+# HDFC Small Cap Fund Direct Growth
+
+## overview
+Category: Equity — Small Cap
+AUM: ₹38,809.479 Cr
+NAV: ₹159.648 (as of 22-Jun-2026)
+Groww rating: 4/5
+Risk: Moderately High Riskometer
+Lock-in: No lock-in period.
+
+## expense_ratio
+Expense ratio: 0.77% (Direct Growth plan).
+Historic expense data is available on the scheme page.
+
+## exit_load
+Exit load of 1% if redeemed within 1 year
+Historic exit load rules may apply for older investments.
+
+## minimum_investment
+Minimum SIP: ₹100
+Minimum lumpsum investment: ₹100
+Additional investment (minimum): ₹100
+SIP multiplier: ₹1
+Maximum SIP: ₹999999999
+
+## benchmark
+Benchmark: BSE 250 SmallCap TRI
+Full name: BSE 250 SmallCap Total Return Index
+
+## tax
+Stamp duty: 0.005% (from July 1st, 2020)
+Equity mutual funds: STCG tax applies on units held ≤12 months; LTCG tax applies on gains above exemption limit for units held >12 months. Debt fund taxation varies by holding period and acquisition date. Refer to the scheme page and latest tax rules for exact rates.
+
+## fund_management
+Dhruv Muchhal — Fund Manager, since Jun 2023
+Education: Mr. Dhruv has done B.Com, CA and CFA
+Experience: Prior to joining HDFC MF,he has worked with Motilal Oswal Financial Services Ltd., Goldman Sachs, CRISIL Global Research & Analytics and Deloitte Haskins & Sells
+
+Chirag Setalvad — Fund Manager, since Jun 2014
+Education: Mr. Setalvad is a B. Sc and MBA from University of North Carolina.
+Experience: Prior to joining HDFC AMC he has worked with New Vernon Advisory Services Ltd., HDFC AMC and ING Barings N.V.
+
+## investment_objective
+The scheme seeks to provide long-term capital appreciation /income by investing predominantly in Small-Cap companies.
+
+## fund_house
+Fund house: HDFC Mutual Fund
+Registrar: CAMS
+Address: "HDFC House", 2nd Floor, H. T. Parekh Marg, 165-166, BackbayReclamation, Churchgate Mumbai 400020
+Phone: 022 – 66316333
+Email: shareholders.relations@hdfcfund.com
+AMC launch date: Dec 1999
+About AMC: HDFC Mutual Fund started their mutual fund on 30/06/2000 and its managing total assets of ₹2,70,046 Cr. Its ranked at 2 as per total assets at end of 30th Sep 2017.
